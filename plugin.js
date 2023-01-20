@@ -8,7 +8,7 @@ mc.listen('onServerStarted',() => {
   cmd.mandatory('arg2',ParamType.Bool)
   cmd.overload(['arg1','arg2'])
   cmd.setCallback((_cmd,ori,out,res) => {
-    const {arg1,arg2}
+    const {arg1,arg2} = res
     var pl = ori.player
     if (arg1 == 'CM') {
       if (arg2 == 'true') {
@@ -44,7 +44,9 @@ mc.listen('onServerStarted',() => {
   cmd.setup()
 })
 mc.listen('onChat',(pl,msg)=> {
-    if (cm == true) {
+    if (cm == null) {
+      pl.tell('<'+pl+'> '+msg)
+    } else if (cm == true) {
         if (pl.hasTag('manage')) {
           if (pl.hasTag('owner')) {
               mc.broadcast('§8[§cOwner§8]§e' + pl.realName + '§b>>§6' + msg)
@@ -88,6 +90,7 @@ mc.listen('onChat',(pl,msg)=> {
               mc.broadcast('§f[Player]' + pl.realName + '>>' + msg)
           }
       }
+    }
     }
     return false
 })
@@ -174,7 +177,7 @@ mc.listen('onServerStarted',()=> {
           pl.tell('§l§c表單填入不正確')
         }
       }
-      else (data[0] == null) {
+      else if (data[0] == null) {
         pl.tell('§l§c表單填入失敗')
       }
     })
@@ -208,7 +211,7 @@ mc.listen('onServerStarted',()=> {
           pl.tell('§l§c表單填入不正確')
         }
       }
-      else (data[0] == null) {
+      else if (data[0] == null) {
         pl.tell('§l§c表單填入失敗')
       }
     })
