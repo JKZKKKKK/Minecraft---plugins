@@ -42,57 +42,56 @@ mc.listen('onServerStarted',() => {
     }
   })
   cmd.setup()
-})
-mc.listen('onChat',(pl,msg)=> {
-    if (cm == null) {
-      pl.tell('<'+pl+'> '+msg)
-    } else if (cm == true) {
-        if (pl.hasTag('manage')) {
-          if (pl.hasTag('owner')) {
-              mc.broadcast('§8[§cOwner§8]§e' + pl.realName + '§b>>§6' + msg)
-          } else if (pl.hasTag('admin')) {
-              mc.broadcast('§8[§gAdmin§8]§6' + pl.realName + '§b>>§b' + msg) 
-          } else if (pl.hasTag('builder')) {
-              mc.broadcast('§8[§aBuilder§8]§e' + pl.realName + '§b>>§e' + msg)
-          } else if (pl.hasTag('bugs')) {
-              mc.broadcast('§8[§dVulnerability Checker§8]§e' + pl.realName + '§b>>§a' + msg)
-          } else if (pl.hasTag('develop')) {
-              mc.broadcast('§8[§bPlugins Develop§8]§e' + pl.realName + '§b>>§c' + msg) 
-          } else if (pl.hasTag('helpadmin')) {
-              mc.broadcast('§8[§9Auxiliary Admin§8]§e' + pl.realName + '§b>>§1' + msg)
-          }
-      } else if (pl.hasTag('donate')) {
-          if (pl.hasTag('mvp')) {
-              mc.broadcast('§b[MVP(D)] ' + pl.realName + '§b>>§e' + msg)
-          } else if (pl.hasTag('mvpp')){
-              mc.broadcast('§b[MVP§c+§b(D)]' + pl.realName + '§b>>§d' + msg)
-          } else if (pl.hasTag('mvppp')) {
-              mc.broadcast('§6[MVP§c++§6(D)]' + pl.realName + '§b>>§b' + msg)
-          } else if ('vip'){
-              mc.broadcast('§a[VIP(D)]' + pl.realName + '§b>>§6' + msg)
-          } else if ('vipp') {
-              mc.broadcast('§a[VIP§6+§a(D)]' + pl.realName + '§b>>§6' + msg)
-          } 
-      } else {
-          if (pl.hasTag('yt')) {
-              mc.broadcast('§c[§fYOUTUBE§c]' + pl.realName + '§b>>§f' + msg)
-          } else if (pl.hasTag('mvp')) {
-              mc.broadcast('§b[MVP] ' + pl.realName + '§b>>§e' + msg)
-          } else if (pl.hasTag('mvpp')){
-              mc.broadcast('§b[MVP§c+§b]' + pl.realName + '§b>>§d' + msg)
-          } else if (pl.hasTag('vip')){
-              mc.broadcast('§a[VIP]' + pl.realName + '§b>>§6' + msg)
-          } else if (pl.hasTag('vipp')) {
-              mc.broadcast('§a[VIP§6+§a]' + pl.realName + '§b>>§6' + msg)
-          } else if (pl.hasTag('vipp')) {
-              mc.broadcast('§a[VIP§6++§a]' + pl.realName + '§b>>§6' + msg)
-          } else {
-              mc.broadcast('§f[Player]' + pl.realName + '>>' + msg)
-          }
+  mc.listen('onChat',(pl,msg)=> {
+      if (cm == null) {
+        pl.tell('<'+pl+'> '+msg)
+      } else if (cm == true) {
+          if (pl.hasTag('manage')) {
+            if (pl.hasTag('owner')) {
+                mc.broadcast('§8[§cOwner§8]§e' + pl.realName + '§b>>§6' + msg)
+            } else if (pl.hasTag('admin')) {
+                mc.broadcast('§8[§gAdmin§8]§6' + pl.realName + '§b>>§b' + msg) 
+            } else if (pl.hasTag('builder')) {
+                mc.broadcast('§8[§aBuilder§8]§e' + pl.realName + '§b>>§e' + msg)
+            } else if (pl.hasTag('bugs')) {
+                mc.broadcast('§8[§dVulnerability Checker§8]§e' + pl.realName + '§b>>§a' + msg)
+            } else if (pl.hasTag('develop')) {
+                mc.broadcast('§8[§bPlugins Develop§8]§e' + pl.realName + '§b>>§c' + msg) 
+            } else if (pl.hasTag('helpadmin')) {
+                mc.broadcast('§8[§9Auxiliary Admin§8]§e' + pl.realName + '§b>>§1' + msg)
+            }
+        } else if (pl.hasTag('donate')) {
+            if (pl.hasTag('mvp')) {
+                mc.broadcast('§b[MVP(D)] ' + pl.realName + '§b>>§e' + msg)
+            } else if (pl.hasTag('mvpp')){
+                mc.broadcast('§b[MVP§c+§b(D)]' + pl.realName + '§b>>§d' + msg)
+            } else if (pl.hasTag('mvppp')) {
+                mc.broadcast('§6[MVP§c++§6(D)]' + pl.realName + '§b>>§b' + msg)
+            } else if ('vip'){
+                mc.broadcast('§a[VIP(D)]' + pl.realName + '§b>>§6' + msg)
+            } else if ('vipp') {
+                mc.broadcast('§a[VIP§6+§a(D)]' + pl.realName + '§b>>§6' + msg)
+            } 
+        } else {
+            if (pl.hasTag('yt')) {
+                mc.broadcast('§c[§fYOUTUBE§c]' + pl.realName + '§b>>§f' + msg)
+            } else if (pl.hasTag('mvp')) {
+                mc.broadcast('§b[MVP] ' + pl.realName + '§b>>§e' + msg)
+            } else if (pl.hasTag('mvpp')){
+                mc.broadcast('§b[MVP§c+§b]' + pl.realName + '§b>>§d' + msg)
+            } else if (pl.hasTag('vip')){
+                mc.broadcast('§a[VIP]' + pl.realName + '§b>>§6' + msg)
+            } else if (pl.hasTag('vipp')) {
+                mc.broadcast('§a[VIP§6+§a]' + pl.realName + '§b>>§6' + msg)
+            } else if (pl.hasTag('vipp')) {
+                mc.broadcast('§a[VIP§6++§a]' + pl.realName + '§b>>§6' + msg)
+            } else {
+                mc.broadcast('§f[Player]' + pl.realName + '>>' + msg)
+            }
+        }
       }
-    }
-    }
-    return false
+      return false
+  })
 })
 mc.listen('onChat',(pl,msg)=> {
   if (AM == true) {
