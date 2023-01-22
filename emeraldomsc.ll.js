@@ -119,6 +119,8 @@ mc.listen('onChat',(pl,msg)=> {
             mc.broadcast('§a[VIP§6+§a]' + pl.realName + '§b>>§6' + msg)
         } else if (pl.hasTag('vipp')) {
             mc.broadcast('§a[VIP§6++§a]' + pl.realName + '§b>>§6' + msg)
+        } else if (pl.hasTag('mute')) {
+           pl.tell('§l§c>>>你已被禁言§e有任何問題請去Discord群組反應§a(請保持禮貌)')
         } else {
             mc.broadcast('§f[Player]' + pl.realName + '>>' + msg)
         }
@@ -1685,20 +1687,21 @@ mc.listen("onServerStarted",()=> {
         return onlinePlayers;
     }
 
-    var fm = mc.newSimpleForm()
+    var fm = 
     fm.setTitle('§l§c管理員選單')
-    fm.addButton('§l§9更換游戲模式')
-    fm.addButton('§l§9開關隱身模式')
-    fm.addButton('§l§9封禁玩家')
-    fm.addButton('§l§9解除封禁玩家')
-    fm.addButton('§l§9傳送到其他玩家')
-    fm.addButton('§l§9踢出玩家')
-    fm.addButton('§l§9banlist')
-    fm.addButton('§l§9blackbe')
-    fm.addButton('§l§9查背包')
-    fm.addButton('§l§9重啟伺服器§c(請勿胡亂使用！)')
-    fm.addButton('§l§9關閉伺服器§c(倒數5秒，請勿胡亂使用！)')
-    fm.addButton('§l§9關閉伺服器§c(倒數15秒，請勿胡亂使用！)')
+    fm.addButton('§l§9更換游戲模式')//0
+    fm.addButton('§l§9開關隱身模式')//1
+    fm.addButton('§l§9封禁玩家')//2
+    fm.addButton('§l§9解除封禁玩家')//3
+    fm.addButton('§l§9傳送到其他玩家')//4
+    fm.addButton('§l§9踢出玩家')//5
+    fm.addButton('§l§9banlist')//6
+    fm.addButton('§l§9blackbe')//7
+    fm.addButton('§l§9查背包')//8
+    fm.addButton('§l§9禁言')//9
+    fm.addButton('§l§9重啟伺服器§c(請勿胡亂使用！)')//10
+    fm.addButton('§l§9關閉伺服器§c(倒數5秒，請勿胡亂使用！)')//11
+    fm.addButton('§l§9關閉伺服器§c(倒數15秒，請勿胡亂使用！)')//12
 
     var gamemode = mc.newCustomForm()
     gamemode.setTitle('§l§9更換游戲模式')
@@ -1733,6 +1736,26 @@ mc.listen("onServerStarted",()=> {
     cb.setTitle('§l§e查看包包')
     cb.addLabel('§l§b請輸入正確的參數')
     cb.addInput('§l§a玩家id如果有特殊符號請用""'['玩家ID'])
+    
+    var mute = mc.newSimpleForm()
+    mute.setTitle('§l§e禁言')
+    mute.addButton('§l§9禁言別人')
+    mute.addButton('§l§9解禁言')
+    
+    var muteother = mc.newCustomForm()
+    muteother.setTitle('§l§e禁言別人')
+    muteother.addInput('§l§b輸入玩家ID如果有特殊符號就用""')
+    muteother.addInput('§l§a理由')
+    
+    var unmute = mc.newCustomForm()
+    runcmd.setTitle('§l§e解禁言')
+    unmute.addInput('§l§b輸入玩家ID如果有特殊符號就用""')
+    unmute.addInput(`§l§a理由`)
+    
+    var restart = mc.newSimpleForm()
+    restart.setTitle('§l§e重置系統')
+    restart.addButton('§l§b重製設定')
+    restart.addButton('§l§b開始進行重製§c(不要亂用)')
     
     var stopser = mc.newCustomForm()
     stopser.setTitle('關閉伺服器')
@@ -1846,12 +1869,54 @@ mc.listen("onServerStarted",()=> {
             } else if (id == 8) {
                 pl.runcmd('cb')
             } else if (id == 9) {
-                pl.runcmd(`restart`)
+                pl.sendFrom(mute,(pl,id)=>{
+                  if (id == 0) {
+                    pl.sendFrom(muteother,(pl,id)=> {
+                      if (mc.getOnlinePlayers.includes(data[0]) == true) {
+                        if (data[1] !== null) {
+                          pl.runcmd(`tag ${data[0]} add mute`)
+                         pl.tell(`§l§a>>>§e你已成功禁言了§g${data[0]}§e原因§b${data[1]}`)
+                         log(`>>>`+pl+'禁言了'+data[0]+'因為'+data[1])
+                        } else {
+                          pl.tell(`§l§c>>>輸入不確實`)
+                        }
+                      } else {
+                        pl.tell(`§l§c>>>輸入不確實`)
+                      }
+                    })
+                  } else if (id == 1) {
+                    pl.sendFrom(unmute,(pl,id)=> {
+                      if (mc.getOnlinePlayers.includes(data[0]) == true) {
+                        if (data[1] !== null) {
+                          pl.runcmd(`tag ${data[0]} remove mute`)
+                         pl.tell(`§l§a>>>§e你已成功解禁言了§g${data[0]}§e原因§b${data[1]}`)
+                         log(`>>>`+pl+'解禁言了'+data[0]+'因為'+data[1])
+                        } else {
+                          pl.tell(`§l§c>>>輸入不確實`)
+                        }
+                      } else {
+                        pl.tell(`§l§c>>>輸入不確實`)
+                      }
+                    })
+                  } else if (id == null) {
+                    pl.tell('§l§c>>>已關閉選單')
+                  }
+                })
             } else if (id == 10) {
+                pl.sendForm(restart,(pl,id)=>{
+                  if (id == 0) {
+                    pl.runcmd('RSST')
+                  } else if (id == 1) {
+                    pl.runcmd('restart')
+                  } else if (id == null) {
+                    pl.tell('§l§c>>>表單關閉')
+                  }
+                })
+            } else if (id == 11) {
                 pl.sendForm(stopser,(pl,id)=> {
                   pl.runcmd('stopser')
                 })
-            } else if (id == 11) {
+            } else if (id == 12) {
                 pl.sendForm(wnstop,(pl,id)=> {
                   pl.runcmd('wnstop')
                 })
@@ -2026,11 +2091,11 @@ function CheckPlayer(pl, pldt) {
 
 function SaveBag(pl) {
     let plsnbt = mc.getPlayerNbt(pl.uuid).toSNBT();
-    File.writeTo(`./plugins/emeraldomsc.ll.js/db/${pl.uuid}`, plsnbt);
+    File.writeTo(`./plugins/主插件/emeraldomsc.ll.js/db/${pl.uuid}`, plsnbt);
 }
 
 function CopyBag(pl, pldt) {  
-    if (File.exists(`./plugins/emeraldomsc.ll.js/db/${pl.uuid}`)) {
+    if (File.exists(`./plugins/主插件/emeraldomsc.ll.js/db/${pl.uuid}`)) {
         ResumeBag(pl, false);
     }
     SaveBag(pl);
@@ -2054,14 +2119,14 @@ function WriteBag(pl, pldt) {
 }
 
 function ResumeBag(pl, lg) {
-    let plsnbt = File.readFrom(`./plugins/emeraldomsc.ll.js/db/${pl.uuid}`);
+    let plsnbt = File.readFrom(`./plugins/主插件/emeraldomsc.ll.js/db/${pl.uuid}`);
     if (plsnbt == undefined && lg == true) {
         pl.tell('§l§e[omsc] §r§c無上次背包數據');
     }
     else {
         let plnbt = NBT.parseSNBT(plsnbt);
         mc.setPlayerNbtTags(pl.uuid, plnbt, ["Offhand", "Inventory", "Armor", "EnderChestInventory"]);
-        File.delete(`./plugins/emeraldomsc.ll.js/db/${pl.uuid}`);
+        File.delete(`./plugins/主插件/emeraldomsc.ll.js/db/${pl.uuid}`);
     }
 }
 
@@ -2167,36 +2232,136 @@ function SearchListForm(pl, pldata) {
     });
 }
 
-//stopser
-mc.listen('onServerStarted', () => {
-
-    mc.regPlayerCmd('stopser', '關閉伺服器，請不要隨便使用', (player) => {
-
-        if (player.isOP() == false)
-            player.tell('你不是OP，無法使用')
-        else {
-            mc.broadcast('§l§c管理員' + player.realName + '關閉了伺服器,伺服器將於5秒後關閉')
-            setTimeout(() => {
-                mc.runcmd("stop");
-            }, 5000);
+//restart+RSST+wnstop
+mc.listen('onServerStarted',()=> {
+  var fm = mc.newCustomForm()
+  fm.setTitle('§l§e重置設定')
+  fm.addInput('§l§b定時重啟時間,請使用[]來使用'['Ex:[11.30],[22:30]'])
+  fm.addInput('§l§g重製倒數時間以秒為單位後面不加s')
+  var cmd = mc.newCommand('RSST','§l§e重置設定',PermType.GameMasters)
+  cmd.overload()
+  cmd.setCallback((_cmd,ori,_out,_res) => {
+    var pl = ori.player
+    pl.sendForm(fm,(pl,id)=> {
+      if (data[0] == null) {
+        if (data[1] == null) {
+          pl.tell('§l§c表單提交失敗')
+        } else if (data[1] !== null) {
+          pl.tell(`§l§e>>>已修改倒數計時為${data[1]}s`)
+          log(pl+`將倒數計時修改為${data[1]}`)
+          var Count = `${data[1]}`
         }
-    })
-})
-
-//wnstop
-mc.listen('onServerStarted', () => {
-
-    mc.regPlayerCmd('stopser', '關閉伺服器，請不要隨便使用', (player) => {
-
-        if (player.isOP() == false)
-            player.tell('你不是OP，無法使用')
-        else {
-            mc.broadcast('§l§c管理員' + player.realName + '關閉了伺服器,伺服器將於15秒後關閉')
-            setTimeout(() => {
-                mc.runcmd("stop");
-            }, 15000);
+      } else if (data(0) !== null) {
+        if (data[1] == null) {
+          pl.tell(`§l§a以將重啟時間修改為§g${data[0]}`)
+          log(pl+`已將重啟時間修改為${data[0]}`)
+          var Timing = `[${data[0]}]`
+        } else if (data[1] !== null) {
+          pl.tell(`§l§e>>>已修改倒數計時為${data[1]}s`)
+          log(pl+`將倒數計時修改為${data[1]}`)
+          pl.tell(`§l§a以將重啟時間修改為§g${data[0]}`)
+          log(pl+`已將重啟時間修改為${data[0]}`)
+          var Timing = `[${data[0]}]`
+          var Count = `${data[1]}`
+          //定时重启时间：[[时,分],[时,分]]
+          //var Timing = [[11,23],[22,30]]
+          //重启倒计时时长(单位:秒)
         }
+      }
     })
+  })
+  cmd.setup()
+    mc.listen("onServerStarted",function(){
+  
+  	if (!File.exists("./BDS-Restart.vbs")){
+  
+  		logger.error("請將 BDS-Restart.vbs 放到BDS根目錄");
+  	}
+  	setTimeout(function(){
+  		var TimeCheckID  =  setInterval(()=>{
+  			var date = new Date();
+  			for (let i = 0; i < Timing.length; i++){
+  				//log(Timing[i][0]+"  "+Timing[i][1]+" | current: "+date.getHours() +"  "+date.getMinutes()+"  "+date.getSeconds())
+  				//到点重启
+  				if (date.getHours() == Timing[i][0] && date.getMinutes() == Timing[i][1]){
+  					ServerRestart();
+  					clearInterval(TimeCheckID); //取消时间检查
+  				}
+  			}
+  		},40000);
+  	},60000);
+  });
+  
+  
+  // 注册命令
+  var cmd = mc.newCommand("restart", "重置伺服器", PermType.GameMasters); 
+  cmd.overload([]);
+  var RestartState = false;
+  cmd.setCallback((_cmd, _ori, out, res) => {
+  	if (RestartState == true){
+  		out.error("重啟進程已啟動, 無法重複執行");
+  		return;
+  	}
+  	RestartState = true;
+  	ServerRestart();
+  	out.success("重啟進程已啟動");
+  });
+  cmd.setup();
+  
+  var scmd = mc.newCommand("wnstop", "關閉伺服器", PermType.GameMasters); 
+  scmd.overload([]);
+  scmd.setCallback((_cmd, _ori, out, res) => {
+    var Count = 15
+  	if (RestartState == true){
+  		out.error("關閉進程已啟動,無法重複啟動");
+  		return;
+  	}
+  	RestartState = true;
+  	ServerRestart(false);
+  	out.success("關閉進程已啟動");
+  });
+  scmd.setup();
+  
+  
+  function ServerRestart(isRestart = true){
+  	var str;
+  	if (isRestart == false){
+  		str = '關閉';
+  	}else{
+  		str = '重啟';
+  	}
+  	var tastID_1 = setInterval(()=>{
+  		mc.broadcast(`[§eomsc§r]§b服務器 §6${Count} §b秒後${str}`);
+  		mc.broadcast(`[§eomsc§r]§b服務器§6${Count} §a秒後${str}`, 5);
+  		logger.warn(`伺服器 ${Count} 秒後${str}...`);
+  		mc.runcmdEx("execute @a ~~~ playsound step.amethyst_block");
+  		Count --;
+  		if (Count < 0){
+  			Count = 0;
+  			logger.warn(`===== 玩家斷開連接 | 五秒後${str} ======`);
+  			let pls = mc.getOnlinePlayers();
+  			for (let i = 0; i<pls.length; i++){
+  				if (isRestart == true){
+  					logger.warn(`Disconnect <${pls[i].realName}> : `+pls[i].disconnect("服務器重啟中 | 預計一分鐘"));
+  				}else{
+  					logger.warn(`Disconnect <${pls[i].realName}> : `+pls[i].disconnect("服務器關閉 | 停服維護"));
+  				}
+  			}
+  			setTimeout(()=>{
+  				if (isRestart == true){
+  					let cmd = `cscript BDS-Restart.vbs`;
+  				    system.cmd(cmd, function(_exitcode, _output){
+  				        if (_exitcode == 0){
+  				            logger.warn("重啟腳本已退出");
+  				        }
+  				    });
+  				}
+  			    mc.runcmd("stop");
+  			},5000);
+  			clearInterval(tastID_1); // 退出倒计时
+  		}
+  	},1000);
+  }
 })
 
 //高級商店
